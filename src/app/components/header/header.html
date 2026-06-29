@@ -1,1 +1,23 @@
-<p>header works!</p>
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-mark">&#9733;</span>
+    <h1 class="brand-title">Délices de Douala</h1>
+  </div>
+
+  <div class="stats">
+    <span class="stat">
+      <span class="stat-icon">&#9733;</span>
+      <span class="stat-value">{{ ratedCount() }} / {{ totalCount() }}</span>
+      <span class="stat-label">restaurants notés</span>
+    </span>
+
+    @if (ratedCount() > 0) {
+      <span class="stat divider" aria-hidden="true">•</span>
+      <span class="stat">
+        <span class="stat-icon">&#9733;</span>
+        <span class="stat-value">{{ averageRating() | number: '1.1-1' }} / 5</span>
+        <span class="stat-label">note moyenne</span>
+      </span>
+    }
+  </div>
+</header>

@@ -1,1 +1,24 @@
-<p>star-rating works!</p>
+<div class="star-rating" (mouseleave)="onLeave()">
+  <div class="stars">
+    @for (star of stars; track star) {
+      <button
+        type="button"
+        class="star"
+        [class.active]="star <= displayRating()"
+        [attr.aria-label]="'Noter ' + star + ' sur 5'"
+        (mouseenter)="onEnter(star)"
+        (click)="onClick(star)"
+      >
+        &#9733;
+      </button>
+    }
+  </div>
+
+  <span class="rating-label">
+    @if (currentRating() > 0) {
+      ({{ currentRating() }}/5)
+    } @else {
+      Cliquez !
+    }
+  </span>
+</div>

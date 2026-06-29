@@ -1,1 +1,8 @@
-<p>restaurant-list works!</p>
+<section class="restaurant-list">
+  @for (restaurant of restaurants(); track restaurant.id) {
+    <app-restaurant-card
+      [restaurant]="restaurant"
+      (restaurantRated)="onRestaurantRated($event)"
+    />
+  }
+</section>

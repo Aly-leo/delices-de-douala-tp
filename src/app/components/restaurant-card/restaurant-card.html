@@ -1,1 +1,16 @@
-<p>restaurant-card works!</p>
+<article class="restaurant-card" [class.rated]="restaurant().currentRating > 0">
+  <header class="card-head">
+    <h3 class="name">{{ restaurant().name }}</h3>
+    <span class="district">{{ restaurant().district }}</span>
+  </header>
+
+  <p class="specialty">
+    <span class="label">Spécialité :</span>
+    <span class="value">{{ restaurant().specialty }}</span>
+  </p>
+
+  <app-star-rating
+    [currentRating]="restaurant().currentRating"
+    (ratingChanged)="onRatingChanged($event)"
+  />
+</article>
