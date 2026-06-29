@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 0.15rem;
+}
+
+.star {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0.15rem;
+  cursor: pointer;
+  font-size: 1.55rem;
+  line-height: 1;
+  color: rgba(247, 239, 226, 0.22);
+
+  transition: transform 0.2s ease, color 0.2s ease, text-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.18);
+  }
+
+  &.active {
+    color: var(--accent-strong);
+    text-shadow: 0 0 14px var(--accent-glow);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+.rating-label {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
