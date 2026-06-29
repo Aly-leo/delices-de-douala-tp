@@ -10,7 +10,7 @@ ainsi que la note moyenne globale.
 
 ## Démo en ligne
 
- **Lien Vercel :** _compléter après le déploiement_
+ **Lien Vercel :** https://delices-de-douala-tp.vercel.app/
 
 ## Stack technique
 
