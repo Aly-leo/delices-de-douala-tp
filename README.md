@@ -1,59 +1,104 @@
-# DelicesDouala
+# Délices de Douala
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.16.
+> Système de notation de restaurants à 5 étoiles — TP Angular Talent Lab 2026
 
-## Development server
+Une mini-application Angular qui référence 6 restaurants emblématiques de Douala
+(Le Calao Doré, Chez Madame Ngono, La Fourchette Camerounaise, Saveurs du Wouri,
+L'Akwa Gourmand, Le Royal de Bali) et permet à un visiteur de les noter de 1 à 5
+étoiles. Le header affiche en temps réel combien de restaurants ont reçu une note
+ainsi que la note moyenne globale.
 
-To start a local development server, run:
+## Démo en ligne
 
-```bash
-ng serve
+ **Lien Vercel :** _compléter après le déploiement_
+
+## Stack technique
+
+- **Angular 21** — Standalone Components, `signal()`, `computed()`, `input()`, `output()`
+- **Control flow moderne** — `@if`, `@for` (aucun `*ngIf` / `*ngFor`)
+- **TypeScript strict** + interface `Restaurant`
+- **SCSS** — design glassmorphism avec `backdrop-filter`
+- **Typographies** : Fraunces (serif éditorial) + Inter
+
+## Architecture (3 niveaux de communication)
+
+```
+App  ───────────────────────────────────────────┐
+│   • signal<Restaurant[]>                       │
+│   • computed: ratedCount, averageRating        │
+│                                                │
+├─[ratedCount, totalCount, averageRating]──► Header
+│
+└─[restaurants]──► RestaurantList
+                   ▲ (restaurantRated)
+                   │
+                   └─[restaurant]──► RestaurantCard
+                                      ▲ (restaurantRated)
+                                      │
+                                      └─[currentRating]──► StarRating
+                                                            ▲ (ratingChanged)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Chaque composant est **standalone**, utilise **`input()` / `output()`** (jamais les
+décorateurs `@Input` / `@Output`), et `ChangeDetectionStrategy.OnPush`. L'état est
+géré au niveau racine via `signal()` et propagé en lecture vers les enfants via les
+inputs ; les notes remontent via une chaîne d'`output()` jusqu'à `App` qui fait un
+`.update()` immuable avec `.map()`.
 
-## Code scaffolding
+## Fonctionnalités
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Obligatoires 
+-  Grille de 6 cartes (nom, quartier, spécialité, 5 étoiles cliquables)
+-  Hover : étoiles précédentes dorées en temps réel
+-  Clic : fixe la note et persiste l'affichage doré
+-  Label `(X/5)` ou `Cliquez !` sous les étoiles
+-  Compteur header `X / 6 restaurants notés` mis à jour en temps réel
+-  Re-noter ne double pas le compteur (logique par `currentRating > 0`)
+-  Code propre : interface TS, signals, `@if`/`@for`, standalone
 
-```bash
-ng generate component component-name
-```
+### Bonus
+-  **Note moyenne** affichée dans le header dès la première notation
+-  **Retirer sa note** : recliquer sur la même étoile remet à 0
+-  **Trier par note** décroissante (toggle dans la toolbar)
+-  **Filtrer** sur les restaurants notés ≥ 4 étoiles (toggle dans la toolbar)
+-  **Animation** : `transform: scale(1.18)` sur les étoiles au hover + glow doux
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+##  Style
 
-```bash
-ng generate --help
-```
+Design glassmorphism élégant, sans couleurs criardes :
+- Fond nuit chaude (`#1a1410 → #3b2820`) avec 3 orbes flous qui dérivent
+- Surfaces en verre : `backdrop-filter: blur(18–22px) saturate(135%)`
+- Palette champagne / cream — accent doré `#e3b06b`
+- Typographies serif (titres) + sans-serif (corps) chargées depuis Google Fonts
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+##  Lancer en local
 
 ```bash
-ng e2e
+npm install
+npm start
+# puis ouvrir http://localhost:4200
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+##  Build de production
 
-## Additional Resources
+```bash
+npm run build
+# artefacts dans dist/delicesDouala/
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+##  Structure
+
+```
+src/app/
+├── app.ts / app.html / app.scss       ← composant racine (signals + computed)
+├── models/restaurant.ts                ← interface Restaurant
+└── components/
+    ├── header/                         ← affiche compteur + moyenne
+    ├── restaurant-list/                ← grille + retransmission output
+    ├── restaurant-card/                ← carte d'un restaurant
+    └── star-rating/                    ← 5 étoiles interactives
+```
+
+---
+
+© 2026 — TP réalisé dans le cadre du parcours **Angular Talent Lab** (cohorte Douala).

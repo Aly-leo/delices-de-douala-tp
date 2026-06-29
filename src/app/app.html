@@ -12,8 +12,36 @@
       [averageRating]="averageRating()"
     />
 
+    <section class="toolbar" aria-label="Affichage des restaurants">
+      <button
+        type="button"
+        class="toggle"
+        [class.active]="sortByRating()"
+        [attr.aria-pressed]="sortByRating()"
+        (click)="toggleSort()"
+      >
+        <span class="toggle-dot"></span>
+        Trier par note
+      </button>
+
+      <button
+        type="button"
+        class="toggle"
+        [class.active]="onlyTopRated()"
+        [attr.aria-pressed]="onlyTopRated()"
+        (click)="toggleFilter()"
+      >
+        <span class="toggle-dot"></span>
+        Top notés (≥ 4&nbsp;★)
+      </button>
+
+      @if (onlyTopRated() && visibleRestaurants().length === 0) {
+        <span class="toolbar-hint">Aucun restaurant n'atteint encore 4 étoiles.</span>
+      }
+    </section>
+
     <app-restaurant-list
-      [restaurants]="restaurants()"
+      [restaurants]="visibleRestaurants()"
       (restaurantRated)="onRestaurantRated($event)"
     />
 

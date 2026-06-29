@@ -21,6 +21,9 @@ export class App {
     { id: 6, name: 'Le Royal de Bali', district: 'Bali', specialty: 'Koki et plantain', currentRating: 0 },
   ]);
 
+  protected readonly sortByRating = signal(false);
+  protected readonly onlyTopRated = signal(false);
+
   protected readonly totalCount = computed(() => this.restaurants().length);
 
   protected readonly ratedCount = computed(
@@ -36,9 +39,28 @@ export class App {
     return sum / rated.length;
   });
 
+  protected readonly visibleRestaurants = computed(() => {
+    let list = this.restaurants();
+    if (this.onlyTopRated()) {
+      list = list.filter((r) => r.currentRating >= 4);
+    }
+    if (this.sortByRating()) {
+      list = [...list].sort((a, b) => b.currentRating - a.currentRating);
+    }
+    return list;
+  });
+
   protected onRestaurantRated({ id, rating }: RestaurantRatedEvent): void {
     this.restaurants.update((list) =>
       list.map((r) => (r.id === id ? { ...r, currentRating: rating } : r)),
     );
+  }
+
+  protected toggleSort(): void {
+    this.sortByRating.update((v) => !v);
+  }
+
+  protected toggleFilter(): void {
+    this.onlyTopRated.update((v) => !v);
   }
 }
