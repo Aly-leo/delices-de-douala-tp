@@ -66,6 +66,41 @@
   gap: clamp(1.5rem, 3vw, 2.25rem);
 }
 
+.tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  align-self: flex-start;
+
+  .tab {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.25s ease, background 0.25s ease;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.active {
+      color: #1a1410;
+      background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+      box-shadow: 0 6px 18px rgba(227, 176, 107, 0.28);
+    }
+  }
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;

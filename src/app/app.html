@@ -12,38 +12,63 @@
       [averageRating]="averageRating()"
     />
 
-    <section class="toolbar" aria-label="Affichage des restaurants">
+    <nav class="tabs" aria-label="Navigation principale">
       <button
         type="button"
-        class="toggle"
-        [class.active]="sortByRating()"
-        [attr.aria-pressed]="sortByRating()"
-        (click)="toggleSort()"
+        class="tab"
+        [class.active]="activeTab() === 'restaurants'"
+        [attr.aria-pressed]="activeTab() === 'restaurants'"
+        (click)="selectTab('restaurants')"
       >
-        <span class="toggle-dot"></span>
-        Trier par note
+        Nos restaurants
       </button>
-
       <button
         type="button"
-        class="toggle"
-        [class.active]="onlyTopRated()"
-        [attr.aria-pressed]="onlyTopRated()"
-        (click)="toggleFilter()"
+        class="tab"
+        [class.active]="activeTab() === 'carte'"
+        [attr.aria-pressed]="activeTab() === 'carte'"
+        (click)="selectTab('carte')"
       >
-        <span class="toggle-dot"></span>
-        Top notés (≥ 4&nbsp;★)
+        La Carte
       </button>
+    </nav>
 
-      @if (onlyTopRated() && visibleRestaurants().length === 0) {
-        <span class="toolbar-hint">Aucun restaurant n'atteint encore 4 étoiles.</span>
-      }
-    </section>
+    @if (activeTab() === 'restaurants') {
+      <section class="toolbar" aria-label="Affichage des restaurants">
+        <button
+          type="button"
+          class="toggle"
+          [class.active]="sortByRating()"
+          [attr.aria-pressed]="sortByRating()"
+          (click)="toggleSort()"
+        >
+          <span class="toggle-dot"></span>
+          Trier par note
+        </button>
 
-    <app-restaurant-list
-      [restaurants]="visibleRestaurants()"
-      (restaurantRated)="onRestaurantRated($event)"
-    />
+        <button
+          type="button"
+          class="toggle"
+          [class.active]="onlyTopRated()"
+          [attr.aria-pressed]="onlyTopRated()"
+          (click)="toggleFilter()"
+        >
+          <span class="toggle-dot"></span>
+          Top notés (≥ 4&nbsp;★)
+        </button>
+
+        @if (onlyTopRated() && visibleRestaurants().length === 0) {
+          <span class="toolbar-hint">Aucun restaurant n'atteint encore 4 étoiles.</span>
+        }
+      </section>
+
+      <app-restaurant-list
+        [restaurants]="visibleRestaurants()"
+        (restaurantRated)="onRestaurantRated($event)"
+      />
+    } @else {
+      <app-carte />
+    }
 
     <footer class="page-footer">
       <p>© 2026 — Délices de Douala • un guide culinaire camerounais</p>

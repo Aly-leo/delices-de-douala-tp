@@ -1,0 +1,16 @@
+<section class="carte" aria-label="La carte du restaurant">
+  <header class="carte-head">
+    <h2 class="carte-title">La Carte du Chef</h2>
+    <p class="carte-subtitle">Une sélection de plats camerounais authentiques</p>
+  </header>
+
+  @if (plats().length > 0) {
+    <div class="plats-grid">
+      @for (plat of plats(); track plat.id) {
+        <app-plat-card [plat]="plat" />
+      }
+    </div>
+  } @else {
+    <p class="empty">Aucun plat à afficher pour l'instant.</p>
+  }
+</section>

@@ -1,0 +1,13 @@
+<article class="plat-card" [class.epuise]="!plat().disponible">
+  <div class="plat-head">
+    <h3 class="plat-nom">{{ plat().nom }}</h3>
+    @if (!plat().disponible) {
+      <span class="badge-epuise" aria-label="Plat épuisé">Épuisé</span>
+    }
+  </div>
+
+  <div class="plat-meta">
+    <span class="categorie">{{ plat().categorie }}</span>
+    <span class="prix">{{ plat().prix | currency:'XAF':'symbol':'1.0-0' }}</span>
+  </div>
+</article>

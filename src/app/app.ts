@@ -1,17 +1,22 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { Carte } from './components/carte/carte';
 import { Header } from './components/header/header';
 import { RestaurantList } from './components/restaurant-list/restaurant-list';
 import { RestaurantRatedEvent } from './components/restaurant-card/restaurant-card';
 import { Restaurant } from './models/restaurant';
 
+type Tab = 'restaurants' | 'carte';
+
 @Component({
   selector: 'app-root',
-  imports: [Header, RestaurantList],
+  imports: [Header, RestaurantList, Carte],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
+  protected readonly activeTab = signal<Tab>('restaurants');
+
   protected readonly restaurants = signal<Restaurant[]>([
     { id: 1, name: 'Le Calao Doré', district: 'Akwa', specialty: 'Ndolé aux crevettes', currentRating: 0 },
     { id: 2, name: 'Chez Madame Ngono', district: 'Bonapriso', specialty: 'Eru aux pieds de bœuf', currentRating: 0 },
@@ -62,5 +67,9 @@ export class App {
 
   protected toggleFilter(): void {
     this.onlyTopRated.update((v) => !v);
+  }
+
+  protected selectTab(tab: Tab): void {
+    this.activeTab.set(tab);
   }
 }
