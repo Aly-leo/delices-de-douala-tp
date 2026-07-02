@@ -13,4 +13,6 @@ export class Carte {
   private readonly menuService = inject(MenuService);
 
   protected readonly plats = this.menuService.plats;
+  protected readonly isLoading = this.menuService.isLoading;
+  protected readonly error = this.menuService.error;
 }

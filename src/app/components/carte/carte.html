@@ -4,13 +4,25 @@
     <p class="carte-subtitle">Une sélection de plats camerounais authentiques</p>
   </header>
 
-  @if (plats().length > 0) {
-    <div class="plats-grid">
-      @for (plat of plats(); track plat.id) {
-        <app-plat-card [plat]="plat" />
-      }
+  @if (isLoading()) {
+    <div class="state state-loading" role="status" aria-live="polite">
+      <span class="loader" aria-hidden="true"></span>
+      Chargement du menu&hellip;
     </div>
-  } @else {
-    <p class="empty">Aucun plat à afficher pour l'instant.</p>
+  } @else if (error()) {
+    <div class="state state-error" role="alert">
+      <strong>Impossible de charger la carte.</strong>
+      <span>Vérifiez votre connexion et réessayez.</span>
+    </div>
+  } @else if (plats(); as liste) {
+    @if (liste.length > 0) {
+      <div class="plats-grid">
+        @for (plat of liste; track plat.id) {
+          <app-plat-card [plat]="plat" />
+        }
+      </div>
+    } @else {
+      <p class="empty">Aucun plat à afficher pour l'instant.</p>
+    }
   }
 </section>

@@ -1,17 +1,12 @@
-import { Injectable, signal } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Plat } from '../models/plat';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-  private readonly _plats = signal<Plat[]>([
-    { id: 'd1', nom: 'Ndolè aux crevettes',      prix: 3500, categorie: 'Plats',      disponible: true },
-    { id: 'd2', nom: 'Poulet DG',                prix: 4000, categorie: 'Plats',      disponible: true },
-    { id: 'd3', nom: 'Poisson braisé + miondo',  prix: 3000, categorie: 'Grillades',  disponible: true },
-    { id: 'd4', nom: 'Eru + water fufu',         prix: 2500, categorie: 'Plats',      disponible: true },
-    { id: 'd5', nom: 'Koki + plantain mûr',      prix: 2000, categorie: 'Végétarien', disponible: true },
-    { id: 'd6', nom: 'Jus de bissap',            prix: 1000, categorie: 'Boissons',   disponible: true },
-    { id: 'd7', nom: 'Jus de gingembre',         prix: 1000, categorie: 'Boissons',   disponible: false },
-  ]);
+  private readonly menuResource = httpResource<Plat[]>(() => '/api/plats.json');
 
-  readonly plats = this._plats.asReadonly();
+  readonly plats = this.menuResource.value;
+  readonly isLoading = this.menuResource.isLoading;
+  readonly error = this.menuResource.error;
 }
