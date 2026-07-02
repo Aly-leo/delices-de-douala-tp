@@ -27,6 +27,40 @@
   }
 }
 
+.filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filtre-btn {
+  appearance: none;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--text-secondary);
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    color: var(--text-primary);
+    border-color: var(--glass-border-strong);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    color: #1a1410;
+    background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+    border-color: rgba(227, 176, 107, 0.55);
+    box-shadow: 0 6px 18px rgba(227, 176, 107, 0.28);
+  }
+}
+
 .plats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

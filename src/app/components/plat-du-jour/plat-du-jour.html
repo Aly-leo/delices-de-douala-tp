@@ -1,1 +1,18 @@
-<p>plat-du-jour works!</p>
+@if (platDuJour(); as plat) {
+  <article class="plat-jour" aria-live="polite">
+    <div class="ruban">
+      <span class="ruban-icon">&#9733;</span>
+      <span class="ruban-label">Plat du jour</span>
+    </div>
+
+    <div class="plat-jour-body">
+      <h3 class="nom">{{ plat.nom }}</h3>
+      <div class="meta">
+        <span class="categorie">{{ plat.categorie }}</span>
+        <span class="prix">{{ plat.prix | currency:'XAF':'symbol':'1.0-0' }}</span>
+      </div>
+    </div>
+
+    <p class="hint">Le plat change automatiquement toutes les 5 secondes.</p>
+  </article>
+}

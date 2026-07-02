@@ -15,14 +15,31 @@
       <span>Vérifiez votre connexion et réessayez.</span>
     </div>
   } @else if (plats(); as liste) {
-    @if (liste.length > 0) {
+    <app-plat-du-jour [plats]="liste" />
+
+    <div class="filtres" role="tablist" aria-label="Filtrer par catégorie">
+      @for (cat of categories; track cat) {
+        <button
+          type="button"
+          role="tab"
+          class="filtre-btn"
+          [class.active]="categorie() === cat"
+          [attr.aria-selected]="categorie() === cat"
+          (click)="selectCategorie(cat)"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    @if (platsFiltres().length > 0) {
       <div class="plats-grid">
-        @for (plat of liste; track plat.id) {
+        @for (plat of platsFiltres(); track plat.id) {
           <app-plat-card [plat]="plat" />
         }
       </div>
     } @else {
-      <p class="empty">Aucun plat à afficher pour l'instant.</p>
+      <p class="empty">Aucun plat dans cette catégorie.</p>
     }
   }
 </section>
