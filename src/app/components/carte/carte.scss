@@ -27,6 +27,65 @@
   }
 }
 
+.recherche {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .recherche-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .recherche-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    transition: border-color 0.25s ease, background 0.25s ease;
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: rgba(227, 176, 107, 0.45);
+      background: var(--glass-bg-strong);
+    }
+  }
+
+  .recherche-clear {
+    appearance: none;
+    position: absolute;
+    right: 0.85rem;
+    background: rgba(247, 239, 226, 0.10);
+    border: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background: rgba(247, 239, 226, 0.18);
+      color: var(--text-primary);
+    }
+  }
+}
+
 .filtres {
   display: flex;
   flex-wrap: wrap;

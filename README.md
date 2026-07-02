@@ -1,69 +1,74 @@
 # Délices de Douala
 
-> Système de notation de restaurants à 5 étoiles — TP Angular Talent Lab 2026
+> Guide culinaire camerounais — TP Angular Talent Lab 2026 (Jour 7 & Jour 8)
 
-Une mini-application Angular qui référence 6 restaurants emblématiques de Douala
-(Le Calao Doré, Chez Madame Ngono, La Fourchette Camerounaise, Saveurs du Wouri,
-L'Akwa Gourmand, Le Royal de Bali) et permet à un visiteur de les noter de 1 à 5
-étoiles. Le header affiche en temps réel combien de restaurants ont reçu une note
-ainsi que la note moyenne globale.
+Application Angular 21 en deux pages :
+- **Nos restaurants** — notation 5 étoiles de 6 restaurants emblématiques de Douala (TP Jour 7)
+- **La Carte** — menu du restaurant servi depuis un JSON via `httpResource()`, filtrage par catégorie, recherche par nom, plat du jour rotatif (TP Jour 8)
 
 ## Démo en ligne
 
- **Lien Vercel :** https://delices-de-douala-tp.vercel.app/
+**Lien Vercel :** https://delices-de-douala-tp.vercel.app/
 
 ## Stack technique
 
-- **Angular 21** — Standalone Components, `signal()`, `computed()`, `input()`, `output()`
+- **Angular 21** — Standalone Components, `signal()`, `computed()`, `input()`, `output()`, `inject()`
+- **Couche HTTP moderne** — `provideHttpClient(withFetch())` + `httpResource()` (pas de `HttpClientModule`)
+- **RxJS interop** — `interval() → toSignal()` pour la rotation automatique
 - **Control flow moderne** — `@if`, `@for` (aucun `*ngIf` / `*ngFor`)
-- **TypeScript strict** + interface `Restaurant`
+- **TypeScript strict** — interfaces `Restaurant` et `Plat`
+- **Environnements** — `serverUrl` et `restaurantNom` externalisés
 - **SCSS** — design glassmorphism avec `backdrop-filter`
 - **Typographies** : Fraunces (serif éditorial) + Inter
 
-## Architecture (3 niveaux de communication)
+## Architecture
+
+### Page Restaurants (Jour 7)
 
 ```
-App  ───────────────────────────────────────────┐
-│   • signal<Restaurant[]>                       │
-│   • computed: ratedCount, averageRating        │
-│                                                │
-├─[ratedCount, totalCount, averageRating]──► Header
-│
-└─[restaurants]──► RestaurantList
-                   ▲ (restaurantRated)
-                   │
-                   └─[restaurant]──► RestaurantCard
-                                      ▲ (restaurantRated)
-                                      │
-                                      └─[currentRating]──► StarRating
-                                                            ▲ (ratingChanged)
+App
+├── Header ◄─ [nom, ratedCount, totalCount, averageRating]
+└── RestaurantList
+    └── RestaurantCard (×6)
+        └── StarRating
 ```
 
-Chaque composant est **standalone**, utilise **`input()` / `output()`** (jamais les
-décorateurs `@Input` / `@Output`), et `ChangeDetectionStrategy.OnPush`. L'état est
-géré au niveau racine via `signal()` et propagé en lecture vers les enfants via les
-inputs ; les notes remontent via une chaîne d'`output()` jusqu'à `App` qui fait un
-`.update()` immuable avec `.map()`.
+État : `signal<Restaurant[]>` au niveau `App`. Les notes remontent via une chaîne
+d'`output()` jusqu'à `App`, qui fait un `.update()` immuable avec `.map()`.
+
+### Page La Carte (Jour 8)
+
+```
+App
+└── Carte ◄─ inject(MenuService)
+    ├── PlatDuJour ◄─ [plats]
+    │   └── interval(5000) → toSignal()
+    └── PlatCard (×N filtrés)
+```
+
+Données : `MenuService` (providedIn root) encapsule un `httpResource<Plat[]>()`
+qui charge `/api/plats.json`. Le service expose `plats`, `isLoading`, `error` en
+lecture seule. `Carte` combine un signal `categorie` + un signal `recherche`
+dans un `computed` `platsFiltres` — aucun recalcul manuel.
 
 ## Fonctionnalités
 
-### Obligatoires 
--  Grille de 6 cartes (nom, quartier, spécialité, 5 étoiles cliquables)
--  Hover : étoiles précédentes dorées en temps réel
--  Clic : fixe la note et persiste l'affichage doré
--  Label `(X/5)` ou `Cliquez !` sous les étoiles
--  Compteur header `X / 6 restaurants notés` mis à jour en temps réel
--  Re-noter ne double pas le compteur (logique par `currentRating > 0`)
--  Code propre : interface TS, signals, `@if`/`@for`, standalone
+### Page Restaurants
+- Grille de 6 cartes (nom, quartier, spécialité, 5 étoiles cliquables)
+- Hover : étoiles précédentes dorées en temps réel
+- Compteur header `X / 6 restaurants notés` + note moyenne
+- Toggle **Trier par note** + toggle **Top notés (≥ 4 ★)**
+- Retirer sa note (reclic sur la même étoile)
 
-### Bonus
--  **Note moyenne** affichée dans le header dès la première notation
--  **Retirer sa note** : recliquer sur la même étoile remet à 0
--  **Trier par note** décroissante (toggle dans la toolbar)
--  **Filtrer** sur les restaurants notés ≥ 4 étoiles (toggle dans la toolbar)
--  **Animation** : `transform: scale(1.18)` sur les étoiles au hover + glow doux
+### Page La Carte (Jour 8)
+- Chargement HTTP via `httpResource()` avec les 3 états : **loading** (spinner), **error** (message), **data** (grille)
+- Prix en FCFA (`currency:'XAF':'symbol':'1.0-0'`)
+- Filtre par catégorie (5 boutons : Toutes / Plats / Grillades / Végétarien / Boissons)
+- Recherche par nom (input signal + computed)
+- Plat du jour qui tourne toutes les 5 secondes (Observable RxJS → signal)
+- Badge « Épuisé » + carte grisée pour les plats indisponibles
 
-##  Style
+## Style
 
 Design glassmorphism élégant, sans couleurs criardes :
 - Fond nuit chaude (`#1a1410 → #3b2820`) avec 3 orbes flous qui dérivent
@@ -71,32 +76,46 @@ Design glassmorphism élégant, sans couleurs criardes :
 - Palette champagne / cream — accent doré `#e3b06b`
 - Typographies serif (titres) + sans-serif (corps) chargées depuis Google Fonts
 
-##  Lancer en local
+## Lancer en local
 
 ```bash
 npm install
 npm start
-# puis ouvrir http://localhost:4200
+# ng serve --host 0.0.0.0 --port 8080 → ouvrir http://localhost:8080
 ```
 
-##  Build de production
+## Build de production
 
 ```bash
 npm run build
-# artefacts dans dist/delicesDouala/
+# artefacts dans dist/delicesDouala/browser/
 ```
 
-##  Structure
+## Structure
 
 ```
-src/app/
-├── app.ts / app.html / app.scss       ← composant racine (signals + computed)
-├── models/restaurant.ts                ← interface Restaurant
-└── components/
-    ├── header/                         ← affiche compteur + moyenne
-    ├── restaurant-list/                ← grille + retransmission output
-    ├── restaurant-card/                ← carte d'un restaurant
-    └── star-rating/                    ← 5 étoiles interactives
+src/
+├── environments/
+│   ├── environment.ts                  ← prod (serverUrl, restaurantNom)
+│   └── environment.development.ts
+├── app/
+│   ├── app.ts / app.html / app.scss    ← composant racine + nav onglets
+│   ├── app.config.ts                   ← provideHttpClient(withFetch())
+│   ├── models/
+│   │   ├── restaurant.ts
+│   │   └── plat.ts
+│   ├── services/
+│   │   └── menu.service.ts             ← httpResource + signal + asReadonly
+│   └── components/
+│       ├── header/                     ← reçoit nom + compteurs
+│       ├── restaurant-list/            ← grille + retransmission output
+│       ├── restaurant-card/            ← une carte de restaurant
+│       ├── star-rating/                ← 5 étoiles interactives
+│       ├── carte/                      ← page carte (filtre + recherche)
+│       ├── plat-card/                  ← une carte de plat (badge épuisé)
+│       └── plat-du-jour/               ← interval(5s) → toSignal
+└── public/
+    └── api/plats.json                  ← « serveur » local
 ```
 
 ---

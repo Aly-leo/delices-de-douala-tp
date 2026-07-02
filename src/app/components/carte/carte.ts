@@ -29,14 +29,30 @@ export class Carte {
   ];
 
   protected readonly categorie = signal<CategorieFiltre>('Toutes');
+  protected readonly recherche = signal('');
 
   protected readonly platsFiltres = computed(() => {
     const liste = this.plats() ?? [];
     const cat = this.categorie();
-    return cat === 'Toutes' ? liste : liste.filter((p) => p.categorie === cat);
+    const q = this.recherche().trim().toLowerCase();
+
+    return liste.filter((p) => {
+      const okCat = cat === 'Toutes' || p.categorie === cat;
+      const okQuery = q === '' || p.nom.toLowerCase().includes(q);
+      return okCat && okQuery;
+    });
   });
 
   protected selectCategorie(cat: CategorieFiltre): void {
     this.categorie.set(cat);
+  }
+
+  protected onRechercheInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.recherche.set(target.value);
+  }
+
+  protected resetRecherche(): void {
+    this.recherche.set('');
   }
 }

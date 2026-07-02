@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { environment } from '../environments/environment';
 import { Carte } from './components/carte/carte';
 import { Header } from './components/header/header';
 import { RestaurantList } from './components/restaurant-list/restaurant-list';
@@ -15,6 +16,8 @@ type Tab = 'restaurants' | 'carte';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
+  protected readonly restaurantNom = environment.restaurantNom;
+
   protected readonly activeTab = signal<Tab>('restaurants');
 
   protected readonly restaurants = signal<Restaurant[]>([

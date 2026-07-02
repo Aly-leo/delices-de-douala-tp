@@ -17,6 +17,23 @@
   } @else if (plats(); as liste) {
     <app-plat-du-jour [plats]="liste" />
 
+    <div class="recherche">
+      <span class="recherche-icon" aria-hidden="true">&#9906;</span>
+      <input
+        type="search"
+        class="recherche-input"
+        placeholder="Rechercher un plat…"
+        [value]="recherche()"
+        (input)="onRechercheInput($event)"
+        aria-label="Rechercher un plat"
+      />
+      @if (recherche()) {
+        <button type="button" class="recherche-clear" (click)="resetRecherche()" aria-label="Effacer la recherche">
+          &times;
+        </button>
+      }
+    </div>
+
     <div class="filtres" role="tablist" aria-label="Filtrer par catégorie">
       @for (cat of categories; track cat) {
         <button
@@ -39,7 +56,7 @@
         }
       </div>
     } @else {
-      <p class="empty">Aucun plat dans cette catégorie.</p>
+      <p class="empty">Aucun plat ne correspond à vos critères.</p>
     }
   }
 </section>

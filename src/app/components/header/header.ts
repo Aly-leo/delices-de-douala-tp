@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
+  readonly nom = input.required<string>();
   readonly ratedCount = input.required<number>();
   readonly totalCount = input.required<number>();
   readonly averageRating = input.required<number>();
