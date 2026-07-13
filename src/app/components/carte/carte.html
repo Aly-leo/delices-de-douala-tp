@@ -52,7 +52,11 @@
     @if (platsFiltres().length > 0) {
       <div class="plats-grid">
         @for (plat of platsFiltres(); track plat.id) {
-          <app-plat-card [plat]="plat" />
+          <app-plat-card
+            [plat]="plat"
+            [quantiteDansPanier]="quantitePour(plat.id)"
+            (ajouter)="onAjouterAuPanier($event)"
+          />
         }
       </div>
     } @else {

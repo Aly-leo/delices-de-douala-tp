@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { Plat } from '../../models/plat';
 
 @Component({
@@ -11,4 +11,20 @@ import { Plat } from '../../models/plat';
 })
 export class PlatCard {
   readonly plat = input.required<Plat>();
+  readonly quantiteDansPanier = input<number>(0);
+  readonly ajouter = output<Plat>();
+
+  protected readonly expanded = signal(false);
+
+  protected toggleExpanded(): void {
+    if (!this.plat().disponible) {
+      return;
+    }
+    this.expanded.update((v) => !v);
+  }
+
+  protected onAjouter(event: Event): void {
+    event.stopPropagation();
+    this.ajouter.emit(this.plat());
+  }
 }

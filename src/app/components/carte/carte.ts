@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { PlatCategorie } from '../../models/plat';
+import { Plat, PlatCategorie } from '../../models/plat';
 import { MenuService } from '../../services/menu.service';
+import { PanierService } from '../../services/panier.service';
 import { PlatCard } from '../plat-card/plat-card';
 import { PlatDuJour } from '../plat-du-jour/plat-du-jour';
 
@@ -15,6 +16,7 @@ type CategorieFiltre = PlatCategorie | 'Toutes';
 })
 export class Carte {
   private readonly menuService = inject(MenuService);
+  private readonly panier = inject(PanierService);
 
   protected readonly plats = this.menuService.plats;
   protected readonly isLoading = this.menuService.isLoading;
@@ -54,5 +56,13 @@ export class Carte {
 
   protected resetRecherche(): void {
     this.recherche.set('');
+  }
+
+  protected onAjouterAuPanier(plat: Plat): void {
+    this.panier.ajouter(plat);
+  }
+
+  protected quantitePour(platId: string): number {
+    return this.panier.quantitePour(platId);
   }
 }
