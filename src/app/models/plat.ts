@@ -1,4 +1,3 @@
-// import { LigneCommande } from './../ligne-commande/ligne-commande';
 export type PlatCategorie = 'Plats' | 'Grillades' | 'Végétarien' | 'Boissons';
 
 export interface Plat {
