@@ -1,1 +1,55 @@
-<p>commande works!</p>
+<section class="commande" aria-label="Mon panier">
+  <header class="commande-head">
+    <div class="head-titre">
+      <h2 class="commande-title">Mon panier</h2>
+      <p class="commande-subtitle">
+        @if (estVide()) {
+          Votre panier est vide.
+        } @else {
+          {{ nombreArticles() }} article{{ nombreArticles() > 1 ? 's' : '' }} sélectionné{{ nombreArticles() > 1 ? 's' : '' }}.
+        }
+      </p>
+    </div>
+
+    @if (!estVide()) {
+      <button
+        type="button"
+        class="btn-vider"
+        (click)="onViderPanier()"
+        aria-label="Vider le panier"
+      >
+        Vider le panier
+      </button>
+    }
+  </header>
+
+  @if (estVide()) {
+    <div class="empty-panier">
+      <span class="empty-icon" aria-hidden="true">&#127837;</span>
+      <p class="empty-titre">Aucun plat pour l'instant</p>
+      <p class="empty-hint">Parcourez la carte et cliquez sur un plat pour l'ajouter.</p>
+      <button type="button" class="btn-parcourir" (click)="onParcourirLaCarte()">
+        Découvrir la carte
+      </button>
+    </div>
+  } @else {
+    <div class="lignes">
+      @for (ligne of lignes(); track ligne.plat.id) {
+        <app-ligne-commande
+          [ligne]="ligne"
+          (incrementer)="onIncrementer($event)"
+          (decrementer)="onDecrementer($event)"
+          (retirer)="onRetirer($event)"
+        />
+      }
+    </div>
+
+    <footer class="commande-total">
+      <div class="total-info">
+        <span class="total-label">Total à payer</span>
+        <span class="total-hint">TVA incluse</span>
+      </div>
+      <span class="total-value">{{ total() | currency:'XAF':'symbol':'1.0-0' }}</span>
+    </footer>
+  }
+</section>

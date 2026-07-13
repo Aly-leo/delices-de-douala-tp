@@ -89,6 +89,10 @@
     cursor: pointer;
     transition: color 0.25s ease, background 0.25s ease;
 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
     &:hover {
       color: var(--text-primary);
     }
@@ -98,7 +102,36 @@
       background: linear-gradient(135deg, var(--accent-strong), var(--accent));
       box-shadow: 0 6px 18px rgba(227, 176, 107, 0.28);
     }
+
+    .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 0.4rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--serif);
+      background: rgba(190, 90, 90, 0.85);
+      color: #fff5f0;
+      box-shadow: 0 4px 12px rgba(190, 90, 90, 0.4);
+      animation: badge-pop 0.3s ease;
+    }
+
+    &.active .tab-badge {
+      background: rgba(26, 20, 16, 0.85);
+      color: var(--accent-strong);
+      box-shadow: 0 4px 12px rgba(26, 20, 16, 0.35);
+    }
   }
+}
+
+@keyframes badge-pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1);    opacity: 1; }
 }
 
 .toolbar {

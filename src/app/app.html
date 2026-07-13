@@ -32,6 +32,18 @@
       >
         La Carte
       </button>
+      <button
+        type="button"
+        class="tab tab-panier"
+        [class.active]="activeTab() === 'panier'"
+        [attr.aria-pressed]="activeTab() === 'panier'"
+        (click)="selectTab('panier')"
+      >
+        Panier
+        @if (nombreArticles() > 0) {
+          <span class="tab-badge" aria-label="{{ nombreArticles() }} articles">{{ nombreArticles() }}</span>
+        }
+      </button>
     </nav>
 
     @if (activeTab() === 'restaurants') {
@@ -67,8 +79,10 @@
         [restaurants]="visibleRestaurants()"
         (restaurantRated)="onRestaurantRated($event)"
       />
-    } @else {
+    } @else if (activeTab() === 'carte') {
       <app-carte />
+    } @else {
+      <app-commande (parcourirLaCarte)="selectTab('carte')" />
     }
 
     <footer class="page-footer">

@@ -1,24 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { environment } from '../environments/environment';
 import { Carte } from './components/carte/carte';
 import { Header } from './components/header/header';
 import { RestaurantList } from './components/restaurant-list/restaurant-list';
 import { RestaurantRatedEvent } from './components/restaurant-card/restaurant-card';
+import { Commande } from './commande/commande';
 import { Restaurant } from './models/restaurant';
+import { PanierService } from './services/panier.service';
 
-type Tab = 'restaurants' | 'carte';
+type Tab = 'restaurants' | 'carte' | 'panier';
 
 @Component({
   selector: 'app-root',
-  imports: [Header, RestaurantList, Carte],
+  imports: [Header, RestaurantList, Carte, Commande],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
+  private readonly panier = inject(PanierService);
+
   protected readonly restaurantNom = environment.restaurantNom;
 
   protected readonly activeTab = signal<Tab>('restaurants');
+  protected readonly nombreArticles = this.panier.nombreArticles;
 
   protected readonly restaurants = signal<Restaurant[]>([
     { id: 1, name: 'Le Calao Doré', district: 'Akwa', specialty: 'Ndolé aux crevettes', currentRating: 0 },

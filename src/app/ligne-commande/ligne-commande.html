@@ -1,1 +1,43 @@
-<p>ligne-commande works!</p>
+<article class="ligne">
+  <div class="ligne-info">
+    <h4 class="ligne-nom">{{ ligne().plat.nom }}</h4>
+    <p class="ligne-meta">
+      <span class="categorie">{{ ligne().plat.categorie }}</span>
+      <span class="prix-unit">{{ ligne().plat.prix | currency:'XAF':'symbol':'1.0-0' }} / unité</span>
+    </p>
+  </div>
+
+  <div class="ligne-actions">
+    <div class="qty" role="group" aria-label="Quantité">
+      <button
+        type="button"
+        class="qty-btn"
+        (click)="onDecrementer()"
+        aria-label="Diminuer la quantité"
+      >
+        &minus;
+      </button>
+      <span class="qty-value" aria-live="polite">{{ ligne().quantite }}</span>
+      <button
+        type="button"
+        class="qty-btn"
+        (click)="onIncrementer()"
+        aria-label="Augmenter la quantité"
+      >
+        +
+      </button>
+    </div>
+
+    <span class="sous-total">{{ sousTotal() | currency:'XAF':'symbol':'1.0-0' }}</span>
+
+    <button
+      type="button"
+      class="retirer-btn"
+      (click)="onRetirer()"
+      aria-label="Retirer du panier"
+      title="Retirer du panier"
+    >
+      &times;
+    </button>
+  </div>
+</article>
