@@ -1,0 +1,94 @@
+<section class="inscription" aria-label="Inscriptions clients">
+  <header class="inscription-head">
+    <h2 class="inscription-title">Inscriptions clients</h2>
+    <p class="inscription-subtitle">
+      Ajoutez, modifiez ou retirez les clients de la maison — la liste est réactive.
+    </p>
+  </header>
+
+  <div class="form-card">
+    <form class="form-inline" (ngSubmit)="enregistrer()">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          name="nom"
+          class="input"
+          placeholder="Nom du client"
+          autocomplete="off"
+          required
+          [(ngModel)]="nom"
+        />
+
+        @if (!nom.trim()) {
+          <small class="hint erreur">Le nom est obligatoire.</small>
+        } @else {
+          <small class="hint apercu">Aperçu : <strong>{{ nom }}</strong></small>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="!nom.trim()"
+        >
+          {{ enEdition() ? 'Modifier' : 'Ajouter' }}
+        </button>
+
+        @if (enEdition()) {
+          <button
+            type="button"
+            class="btn-ghost"
+            (click)="annulerEdition()"
+          >
+            Annuler
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+
+  <div class="clients">
+    <div class="clients-head">
+      <h3 class="clients-title">Liste des clients</h3>
+      <span class="clients-count">{{ clients().length }}</span>
+    </div>
+
+    @if (clients().length === 0) {
+      <div class="empty">
+        <span class="empty-icon" aria-hidden="true">&#128100;</span>
+        <p class="empty-titre">Aucun client inscrit</p>
+        <p class="empty-hint">Saisissez un nom ci-dessus pour commencer.</p>
+      </div>
+    } @else {
+      <ul class="clients-list">
+        @for (client of clients(); track $index; let i = $index) {
+          <li class="ligne">
+            <span class="ligne-index">#{{ i + 1 }}</span>
+            <span class="ligne-nom">{{ client }}</span>
+            <span class="ligne-actions">
+              <button
+                type="button"
+                class="btn-icon btn-modifier"
+                (click)="modifier(i)"
+                aria-label="Modifier ce client"
+                title="Modifier"
+              >
+                Modifier
+              </button>
+              <button
+                type="button"
+                class="btn-icon btn-supprimer"
+                (click)="supprimer(i)"
+                aria-label="Supprimer ce client"
+                title="Supprimer"
+              >
+                &times;
+              </button>
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

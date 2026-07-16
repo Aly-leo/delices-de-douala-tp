@@ -44,6 +44,15 @@
           <span class="tab-badge" aria-label="{{ nombreArticles() }} articles">{{ nombreArticles() }}</span>
         }
       </button>
+      <button
+        type="button"
+        class="tab"
+        [class.active]="activeTab() === 'inscription'"
+        [attr.aria-pressed]="activeTab() === 'inscription'"
+        (click)="selectTab('inscription')"
+      >
+        Inscription
+      </button>
     </nav>
 
     @if (activeTab() === 'restaurants') {
@@ -81,8 +90,10 @@
       />
     } @else if (activeTab() === 'carte') {
       <app-carte />
-    } @else {
+    } @else if (activeTab() === 'panier') {
       <app-commande (parcourirLaCarte)="selectTab('carte')" />
+    } @else {
+      <app-inscription />
     }
 
     <footer class="page-footer">
