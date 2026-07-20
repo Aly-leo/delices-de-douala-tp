@@ -1,94 +1,98 @@
-<section class="inscription" aria-label="Inscriptions clients">
-  <header class="inscription-head">
-    <h2 class="inscription-title">Inscriptions clients</h2>
-    <p class="inscription-subtitle">
-      Ajoutez, modifiez ou retirez les clients de la maison — la liste est réactive.
+<section class="account-screen" aria-label="Inscription">
+  <header class="account-head">
+    <h2 class="account-title">Créer un compte</h2>
+    <p class="account-subtitle">
+      Rejoignez la communauté Délices de Douala en quelques secondes.
     </p>
   </header>
 
-  <div class="form-card">
-    <form class="form-inline" (ngSubmit)="enregistrer()">
-      <div class="input-wrapper">
-        <input
-          type="text"
-          name="nom"
-          class="input"
-          placeholder="Nom du client"
-          autocomplete="off"
-          required
-          [(ngModel)]="nom"
-        />
-
-        @if (!nom.trim()) {
-          <small class="hint erreur">Le nom est obligatoire.</small>
-        } @else {
-          <small class="hint apercu">Aperçu : <strong>{{ nom }}</strong></small>
-        }
-      </div>
-
-      <div class="form-actions">
-        <button
-          type="submit"
-          class="btn-primary"
-          [disabled]="!nom.trim()"
-        >
-          {{ enEdition() ? 'Modifier' : 'Ajouter' }}
-        </button>
-
-        @if (enEdition()) {
-          <button
-            type="button"
-            class="btn-ghost"
-            (click)="annulerEdition()"
-          >
-            Annuler
-          </button>
-        }
-      </div>
-    </form>
-  </div>
-
-  <div class="clients">
-    <div class="clients-head">
-      <h3 class="clients-title">Liste des clients</h3>
-      <span class="clients-count">{{ clients().length }}</span>
+  <form
+    class="form-container"
+    (ngSubmit)="soumettre()"
+    autocomplete="off"
+    novalidate
+  >
+    <div class="form-line">
+      <input
+        type="text"
+        name="firstName"
+        class="input"
+        placeholder="Prénom"
+        required
+        [(ngModel)]="user.firstName"
+      />
+      <input
+        type="text"
+        name="lastName"
+        class="input"
+        placeholder="Nom"
+        required
+        [(ngModel)]="user.lastName"
+      />
     </div>
 
-    @if (clients().length === 0) {
-      <div class="empty">
-        <span class="empty-icon" aria-hidden="true">&#128100;</span>
-        <p class="empty-titre">Aucun client inscrit</p>
-        <p class="empty-hint">Saisissez un nom ci-dessus pour commencer.</p>
-      </div>
-    } @else {
-      <ul class="clients-list">
-        @for (client of clients(); track $index; let i = $index) {
-          <li class="ligne">
-            <span class="ligne-index">#{{ i + 1 }}</span>
-            <span class="ligne-nom">{{ client }}</span>
-            <span class="ligne-actions">
-              <button
-                type="button"
-                class="btn-icon btn-modifier"
-                (click)="modifier(i)"
-                aria-label="Modifier ce client"
-                title="Modifier"
-              >
-                Modifier
-              </button>
-              <button
-                type="button"
-                class="btn-icon btn-supprimer"
-                (click)="supprimer(i)"
-                aria-label="Supprimer ce client"
-                title="Supprimer"
-              >
-                &times;
-              </button>
-            </span>
-          </li>
-        }
-      </ul>
+    <div class="form-line">
+      <input
+        type="email"
+        name="email"
+        class="input"
+        placeholder="Adresse email"
+        required
+        [(ngModel)]="user.email"
+      />
+    </div>
+
+    <div class="form-line">
+      <input
+        type="password"
+        name="password"
+        class="input"
+        placeholder="Mot de passe"
+        required
+        [(ngModel)]="user.password"
+      />
+    </div>
+
+    <div class="form-line">
+      <input
+        type="password"
+        name="confirmPassword"
+        class="input"
+        placeholder="Confirmer le mot de passe"
+        required
+        [(ngModel)]="confirmPassword"
+      />
+    </div>
+
+    @if (user.password && confirmPassword && !motsDePassesCorrespondent) {
+      <p class="form-error">Les mots de passe ne correspondent pas.</p>
     }
-  </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn"
+        [disabled]="!formulaireValide"
+      >
+        S'inscrire
+      </button>
+
+      @if (soumis()) {
+        <button type="button" class="btn-ghost" (click)="reinitialiser()">
+          Nouveau
+        </button>
+      }
+    </div>
+
+    @if (soumis()) {
+      <p class="form-success">
+        Bienvenue <strong>{{ user.firstName }}</strong> — votre compte a été créé.
+      </p>
+    }
+  </form>
+
+  <aside class="preview">
+    <h3 class="preview-title">Aperçu en direct</h3>
+    <pre class="preview-json">{{ user | json }}</pre>
+  </aside>
 </section>

@@ -1,67 +1,61 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-inscription',
-  imports: [FormsModule],
+  imports: [FormsModule, JsonPipe],
   templateUrl: './inscription.html',
   styleUrl: './inscription.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Inscription {
-  // Etat transitoire du formulaire — lie a [(ngModel)]
-  protected nom = '';
+  // Etat transitoire du formulaire — un seul objet lie par [(ngModel)]="user.xxx"
+  protected user: User = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  };
 
-  // Etat applicatif — la liste des clients inscrits (signal, jamais mute)
-  private readonly _clients = signal<string[]>([]);
-  readonly clients = this._clients.asReadonly();
+  // Champ additionnel de confirmation (pas dans le modele User)
+  protected confirmPassword = '';
 
-  // Suit la ligne en cours de modification (null = mode ajout)
-  private readonly _indexEdite = signal<number | null>(null);
-  protected readonly enEdition = computed(() => this._indexEdite() !== null);
+  // Feedback apres soumission (state applicatif de l'ecran)
+  protected readonly soumis = signal(false);
 
-  // Ajoute ou remplace le client selon le mode courant
-  protected enregistrer(): void {
-    const valeur = this.nom.trim();
-    if (!valeur) {
+  // Getter reevalue a chaque cycle de change detection
+  protected get motsDePassesCorrespondent(): boolean {
+    return this.user.password === this.confirmPassword;
+  }
+
+  protected get formulaireValide(): boolean {
+    return (
+      !!this.user.firstName?.trim() &&
+      !!this.user.lastName?.trim() &&
+      !!this.user.email.trim() &&
+      !!this.user.password &&
+      this.motsDePassesCorrespondent
+    );
+  }
+
+  protected soumettre(): void {
+    if (!this.formulaireValide) {
       return;
     }
-    const i = this._indexEdite();
-    if (i === null) {
-      this._clients.update((liste) => [...liste, valeur]);
-    } else {
-      this._clients.update((liste) =>
-        liste.map((c, idx) => (idx === i ? valeur : c)),
-      );
-      this._indexEdite.set(null);
-    }
-    this.nom = '';
+    this.soumis.set(true);
+    // Dans une vraie app : appel service.creerCompte(this.user)
   }
 
-  // Recharge la ligne dans le champ pour edition en place
-  protected modifier(i: number): void {
-    this.nom = this.clients()[i];
-    this._indexEdite.set(i);
-  }
-
-  // Reconstruit la liste sans l'element i (jamais splice)
-  protected supprimer(i: number): void {
-    this._clients.update((liste) => liste.filter((_, idx) => idx !== i));
-    // Annule l'edition si on supprimait la ligne editee
-    if (this._indexEdite() === i) {
-      this._indexEdite.set(null);
-      this.nom = '';
-    }
-  }
-
-  protected annulerEdition(): void {
-    this._indexEdite.set(null);
-    this.nom = '';
+  protected reinitialiser(): void {
+    this.user = { firstName: '', lastName: '', email: '', password: '' };
+    this.confirmPassword = '';
+    this.soumis.set(false);
   }
 }
 
-// Variante signal-native (chapitre 4 du cours) — sans FormsModule :
-//   protected readonly nom = signal('');
-// Dans le template :
-//   <input [value]="nom()" (input)="nom.set($any($event.target).value)" />
-// On garde ici [(ngModel)] pour respecter l'exercice principal.
+// Variante signal-native (bonus) :
+//   protected readonly user = signal<User>({ email: '', password: '' });
+//   <input [value]="user().email" (input)="user.update(u => ({ ...u, email: $any($event.target).value }))" />
+// On garde ici [(ngModel)]="user.xxx" pour respecter l'exercice principal.
