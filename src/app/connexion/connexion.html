@@ -1,8 +1,8 @@
-<section class="account-screen" aria-label="Inscription">
+<section class="account-screen" aria-label="Connexion">
   <header class="account-head">
-    <h2 class="account-title">Créer un compte</h2>
+    <h2 class="account-title">Bienvenue</h2>
     <p class="account-subtitle">
-      Rejoignez la communauté Délices de Douala en quelques secondes.
+      Connectez-vous pour accéder à Délices de Douala.
     </p>
   </header>
 
@@ -14,31 +14,13 @@
   >
     <div class="form-line">
       <input
-        type="text"
-        name="firstName"
-        class="input"
-        placeholder="Prénom"
-        required
-        [(ngModel)]="user.firstName"
-      />
-      <input
-        type="text"
-        name="lastName"
-        class="input"
-        placeholder="Nom"
-        required
-        [(ngModel)]="user.lastName"
-      />
-    </div>
-
-    <div class="form-line">
-      <input
         type="email"
         name="email"
         class="input"
         placeholder="Adresse email"
         required
         [(ngModel)]="user.email"
+        (input)="effacerErreur()"
       />
     </div>
 
@@ -50,23 +32,9 @@
         placeholder="Mot de passe"
         required
         [(ngModel)]="user.password"
+        (input)="effacerErreur()"
       />
     </div>
-
-    <div class="form-line">
-      <input
-        type="password"
-        name="confirmPassword"
-        class="input"
-        placeholder="Confirmer le mot de passe"
-        required
-        [(ngModel)]="confirmPassword"
-      />
-    </div>
-
-    @if (user.password && confirmPassword && !motsDePassesCorrespondent) {
-      <p class="form-error">Les mots de passe ne correspondent pas.</p>
-    }
 
     @if (erreur()) {
       <p class="form-error">{{ erreur() }}</p>
@@ -78,14 +46,14 @@
         class="btn"
         [disabled]="!formulaireValide"
       >
-        S'inscrire
+        Se connecter
       </button>
     </div>
 
     <p class="form-switch">
-      Déjà inscrit ?
+      Pas encore de compte ?
       <button type="button" class="link" (click)="onBasculer()">
-        Se connecter
+        Créer un compte
       </button>
     </p>
   </form>

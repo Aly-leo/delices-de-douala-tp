@@ -193,6 +193,34 @@ h1, h2, h3, h4 {
   }
 }
 
+.form-switch {
+  margin: 0.25rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.link {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--accent-strong);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(240, 193, 132, 0.35);
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
 @media (max-width: 550px) {
   .form-container {
     width: 95%;

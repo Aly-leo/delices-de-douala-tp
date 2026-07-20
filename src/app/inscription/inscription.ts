@@ -1,7 +1,8 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../models/user';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-inscription',
@@ -11,7 +12,11 @@ import { User } from '../models/user';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Inscription {
-  // Etat transitoire du formulaire — un seul objet lie par [(ngModel)]="user.xxx"
+  private readonly auth = inject(AuthService);
+
+  // Emis quand l'utilisateur veut basculer vers l'ecran de connexion
+  readonly basculerVersConnexion = output<void>();
+
   protected user: User = {
     firstName: '',
     lastName: '',
@@ -19,13 +24,11 @@ export class Inscription {
     password: '',
   };
 
-  // Champ additionnel de confirmation (pas dans le modele User)
   protected confirmPassword = '';
 
-  // Feedback apres soumission (state applicatif de l'ecran)
-  protected readonly soumis = signal(false);
+  // null = pas d'erreur, sinon message a afficher
+  protected readonly erreur = signal<string | null>(null);
 
-  // Getter reevalue a chaque cycle de change detection
   protected get motsDePassesCorrespondent(): boolean {
     return this.user.password === this.confirmPassword;
   }
@@ -44,18 +47,19 @@ export class Inscription {
     if (!this.formulaireValide) {
       return;
     }
-    this.soumis.set(true);
-    // Dans une vraie app : appel service.creerCompte(this.user)
+    const resultat = this.auth.register(this.user);
+    if (!resultat.ok) {
+      this.erreur.set(
+        resultat.reason === 'email-taken'
+          ? 'Un compte existe déjà pour cet email.'
+          : 'Impossible de créer le compte.',
+      );
+      return;
+    }
+    // Succès : AuthService a auto-connecté l'utilisateur → App bascule vers le site
   }
 
-  protected reinitialiser(): void {
-    this.user = { firstName: '', lastName: '', email: '', password: '' };
-    this.confirmPassword = '';
-    this.soumis.set(false);
+  protected onBasculer(): void {
+    this.basculerVersConnexion.emit();
   }
 }
-
-// Variante signal-native (bonus) :
-//   protected readonly user = signal<User>({ email: '', password: '' });
-//   <input [value]="user().email" (input)="user.update(u => ({ ...u, email: $any($event.target).value }))" />
-// On garde ici [(ngModel)]="user.xxx" pour respecter l'exercice principal.

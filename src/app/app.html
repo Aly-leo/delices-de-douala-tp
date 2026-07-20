@@ -53,6 +53,15 @@
       >
         Inscription
       </button>
+      <button
+        type="button"
+        class="tab"
+        [class.active]="activeTab() === 'connexion'"
+        [attr.aria-pressed]="activeTab() === 'connexion'"
+        (click)="selectTab('connexion')"
+      >
+        Connexion
+      </button>
     </nav>
 
     @if (activeTab() === 'restaurants') {
@@ -92,8 +101,10 @@
       <app-carte />
     } @else if (activeTab() === 'panier') {
       <app-commande (parcourirLaCarte)="selectTab('carte')" />
-    } @else {
+    } @else if (activeTab() === 'inscription') {
       <app-inscription />
+    } @else {
+      <app-connexion />
     }
 
     <footer class="page-footer">

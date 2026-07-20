@@ -5,15 +5,16 @@ import { Header } from './components/header/header';
 import { RestaurantList } from './components/restaurant-list/restaurant-list';
 import { RestaurantRatedEvent } from './components/restaurant-card/restaurant-card';
 import { Commande } from './commande/commande';
+import { Connexion } from './connexion/connexion';
 import { Inscription } from './inscription/inscription';
 import { Restaurant } from './models/restaurant';
 import { PanierService } from './services/panier.service';
 
-type Tab = 'restaurants' | 'carte' | 'panier' | 'inscription';
+type Tab = 'restaurants' | 'carte' | 'panier' | 'inscription' | 'connexion';
 
 @Component({
   selector: 'app-root',
-  imports: [Header, RestaurantList, Carte, Commande, Inscription],
+  imports: [Header, RestaurantList, Carte, Commande, Inscription, Connexion],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
