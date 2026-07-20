@@ -8,9 +8,11 @@ import { Commande } from './commande/commande';
 import { Connexion } from './connexion/connexion';
 import { Inscription } from './inscription/inscription';
 import { Restaurant } from './models/restaurant';
+import { AuthService } from './services/auth.service';
 import { PanierService } from './services/panier.service';
 
-type Tab = 'restaurants' | 'carte' | 'panier' | 'inscription' | 'connexion';
+type Tab = 'restaurants' | 'carte' | 'panier';
+type AuthMode = 'connexion' | 'inscription';
 
 @Component({
   selector: 'app-root',
@@ -21,8 +23,14 @@ type Tab = 'restaurants' | 'carte' | 'panier' | 'inscription' | 'connexion';
 })
 export class App {
   private readonly panier = inject(PanierService);
+  private readonly auth = inject(AuthService);
 
   protected readonly restaurantNom = environment.restaurantNom;
+
+  // Auth gate — quel ecran d'authentification on affiche
+  protected readonly authMode = signal<AuthMode>('connexion');
+  protected readonly isAuthenticated = this.auth.isAuthenticated;
+  protected readonly userDisplayName = this.auth.displayName;
 
   protected readonly activeTab = signal<Tab>('restaurants');
   protected readonly nombreArticles = this.panier.nombreArticles;
@@ -81,5 +89,14 @@ export class App {
 
   protected selectTab(tab: Tab): void {
     this.activeTab.set(tab);
+  }
+
+  protected setAuthMode(mode: AuthMode): void {
+    this.authMode.set(mode);
+  }
+
+  protected onLogout(): void {
+    this.auth.logout();
+    this.authMode.set('connexion');
   }
 }

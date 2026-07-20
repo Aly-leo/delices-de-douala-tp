@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -13,4 +13,11 @@ export class Header {
   readonly ratedCount = input.required<number>();
   readonly totalCount = input.required<number>();
   readonly averageRating = input.required<number>();
+  readonly userDisplayName = input.required<string>();
+
+  readonly logout = output<void>();
+
+  protected onLogout(): void {
+    this.logout.emit();
+  }
 }

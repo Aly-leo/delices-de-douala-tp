@@ -5,110 +5,106 @@
     <span class="orb orb-3"></span>
   </div>
 
-  <main class="shell">
-    <app-header
-      [nom]="restaurantNom"
-      [ratedCount]="ratedCount()"
-      [totalCount]="totalCount()"
-      [averageRating]="averageRating()"
-    />
+  @if (!isAuthenticated()) {
+    <main class="auth-gate">
+      <div class="auth-brand">
+        <span class="auth-mark">&#9733;</span>
+        <h1 class="auth-brand-title">{{ restaurantNom }}</h1>
+        <p class="auth-brand-tagline">Guide culinaire camerounais</p>
+      </div>
 
-    <nav class="tabs" aria-label="Navigation principale">
-      <button
-        type="button"
-        class="tab"
-        [class.active]="activeTab() === 'restaurants'"
-        [attr.aria-pressed]="activeTab() === 'restaurants'"
-        (click)="selectTab('restaurants')"
-      >
-        Nos restaurants
-      </button>
-      <button
-        type="button"
-        class="tab"
-        [class.active]="activeTab() === 'carte'"
-        [attr.aria-pressed]="activeTab() === 'carte'"
-        (click)="selectTab('carte')"
-      >
-        La Carte
-      </button>
-      <button
-        type="button"
-        class="tab tab-panier"
-        [class.active]="activeTab() === 'panier'"
-        [attr.aria-pressed]="activeTab() === 'panier'"
-        (click)="selectTab('panier')"
-      >
-        Panier
-        @if (nombreArticles() > 0) {
-          <span class="tab-badge" aria-label="{{ nombreArticles() }} articles">{{ nombreArticles() }}</span>
-        }
-      </button>
-      <button
-        type="button"
-        class="tab"
-        [class.active]="activeTab() === 'inscription'"
-        [attr.aria-pressed]="activeTab() === 'inscription'"
-        (click)="selectTab('inscription')"
-      >
-        Inscription
-      </button>
-      <button
-        type="button"
-        class="tab"
-        [class.active]="activeTab() === 'connexion'"
-        [attr.aria-pressed]="activeTab() === 'connexion'"
-        (click)="selectTab('connexion')"
-      >
-        Connexion
-      </button>
-    </nav>
-
-    @if (activeTab() === 'restaurants') {
-      <section class="toolbar" aria-label="Affichage des restaurants">
-        <button
-          type="button"
-          class="toggle"
-          [class.active]="sortByRating()"
-          [attr.aria-pressed]="sortByRating()"
-          (click)="toggleSort()"
-        >
-          <span class="toggle-dot"></span>
-          Trier par note
-        </button>
-
-        <button
-          type="button"
-          class="toggle"
-          [class.active]="onlyTopRated()"
-          [attr.aria-pressed]="onlyTopRated()"
-          (click)="toggleFilter()"
-        >
-          <span class="toggle-dot"></span>
-          Top notés (≥ 4&nbsp;★)
-        </button>
-
-        @if (onlyTopRated() && visibleRestaurants().length === 0) {
-          <span class="toolbar-hint">Aucun restaurant n'atteint encore 4 étoiles.</span>
-        }
-      </section>
-
-      <app-restaurant-list
-        [restaurants]="visibleRestaurants()"
-        (restaurantRated)="onRestaurantRated($event)"
+      @if (authMode() === 'connexion') {
+        <app-connexion (basculerVersInscription)="setAuthMode('inscription')" />
+      } @else {
+        <app-inscription (basculerVersConnexion)="setAuthMode('connexion')" />
+      }
+    </main>
+  } @else {
+    <main class="shell">
+      <app-header
+        [nom]="restaurantNom"
+        [ratedCount]="ratedCount()"
+        [totalCount]="totalCount()"
+        [averageRating]="averageRating()"
+        [userDisplayName]="userDisplayName()"
+        (logout)="onLogout()"
       />
-    } @else if (activeTab() === 'carte') {
-      <app-carte />
-    } @else if (activeTab() === 'panier') {
-      <app-commande (parcourirLaCarte)="selectTab('carte')" />
-    } @else if (activeTab() === 'inscription') {
-      <app-inscription />
-    } @else {
-      <app-connexion />
-    }
 
-    <footer class="page-footer">
-      <p>© 2026 — Délices de Douala • un guide culinaire camerounais</p>
-    </footer>
-  </main>
+      <nav class="tabs" aria-label="Navigation principale">
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab() === 'restaurants'"
+          [attr.aria-pressed]="activeTab() === 'restaurants'"
+          (click)="selectTab('restaurants')"
+        >
+          Nos restaurants
+        </button>
+        <button
+          type="button"
+          class="tab"
+          [class.active]="activeTab() === 'carte'"
+          [attr.aria-pressed]="activeTab() === 'carte'"
+          (click)="selectTab('carte')"
+        >
+          La Carte
+        </button>
+        <button
+          type="button"
+          class="tab tab-panier"
+          [class.active]="activeTab() === 'panier'"
+          [attr.aria-pressed]="activeTab() === 'panier'"
+          (click)="selectTab('panier')"
+        >
+          Panier
+          @if (nombreArticles() > 0) {
+            <span class="tab-badge" aria-label="{{ nombreArticles() }} articles">{{ nombreArticles() }}</span>
+          }
+        </button>
+      </nav>
+
+      @if (activeTab() === 'restaurants') {
+        <section class="toolbar" aria-label="Affichage des restaurants">
+          <button
+            type="button"
+            class="toggle"
+            [class.active]="sortByRating()"
+            [attr.aria-pressed]="sortByRating()"
+            (click)="toggleSort()"
+          >
+            <span class="toggle-dot"></span>
+            Trier par note
+          </button>
+
+          <button
+            type="button"
+            class="toggle"
+            [class.active]="onlyTopRated()"
+            [attr.aria-pressed]="onlyTopRated()"
+            (click)="toggleFilter()"
+          >
+            <span class="toggle-dot"></span>
+            Top notés (≥ 4&nbsp;★)
+          </button>
+
+          @if (onlyTopRated() && visibleRestaurants().length === 0) {
+            <span class="toolbar-hint">Aucun restaurant n'atteint encore 4 étoiles.</span>
+          }
+        </section>
+
+        <app-restaurant-list
+          [restaurants]="visibleRestaurants()"
+          (restaurantRated)="onRestaurantRated($event)"
+        />
+      } @else if (activeTab() === 'carte') {
+        <app-carte />
+      } @else {
+        <app-commande (parcourirLaCarte)="selectTab('carte')" />
+      }
+
+      <footer class="page-footer">
+        <p>© 2026 — Délices de Douala • un guide culinaire camerounais</p>
+      </footer>
+    </main>
+  }
 </div>

@@ -66,6 +66,58 @@
   gap: clamp(1.5rem, 3vw, 2.25rem);
 }
 
+.auth-gate {
+  min-height: 100vh;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 4vw, 2rem) 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  animation: fade-down 0.5s ease;
+
+  .auth-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(240, 193, 132, 0.9), rgba(195, 130, 90, 0.75));
+    color: #1a1410;
+    font-size: 1.75rem;
+    box-shadow: 0 12px 32px rgba(227, 176, 107, 0.35);
+    margin-bottom: 0.35rem;
+  }
+
+  .auth-brand-title {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .auth-brand-tagline {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    letter-spacing: 0.02em;
+  }
+}
+
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
 .tabs {
   display: inline-flex;
   gap: 0.35rem;

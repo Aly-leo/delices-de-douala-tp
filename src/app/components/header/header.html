@@ -20,4 +20,19 @@
       </span>
     }
   </div>
+
+  <div class="account">
+    <span class="account-hello">
+      Bonjour, <strong>{{ userDisplayName() }}</strong>
+    </span>
+    <button
+      type="button"
+      class="btn-logout"
+      (click)="onLogout()"
+      aria-label="Se déconnecter"
+      title="Se déconnecter"
+    >
+      Se déconnecter
+    </button>
+  </div>
 </header>
