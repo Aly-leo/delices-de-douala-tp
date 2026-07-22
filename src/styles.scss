@@ -98,10 +98,9 @@ h1, h2, h3, h4 {
   gap: 0.35rem;
 }
 
-.form-line .input,
-.form-field .input {
-  flex: 1 1 220px;
-  min-width: 0;
+.input {
+  display: block;
+  width: 100%;
   padding: 0.85rem 1.1rem;
   border-radius: 14px;
   border: 1px solid var(--glass-border);
@@ -109,20 +108,20 @@ h1, h2, h3, h4 {
   color: var(--text-primary);
   font-family: var(--sans);
   font-size: 0.98rem;
+  line-height: 1.4;
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
-.form-field .input {
-  width: 100%;
+.form-line > .input {
+  flex: 1 1 220px;
+  min-width: 0;
 }
 
-.form-line .input::placeholder,
-.form-field .input::placeholder {
+.input::placeholder {
   color: var(--text-muted);
 }
 
-.form-line .input:focus,
-.form-field .input:focus {
+.input:focus {
   outline: none;
   border-color: rgba(227, 176, 107, 0.55);
   background: rgba(255, 248, 238, 0.07);

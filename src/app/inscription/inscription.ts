@@ -1,53 +1,48 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { User } from '../models/user';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { motsDePasseIdentiques } from '../validateurs';
 
 @Component({
   selector: 'app-inscription',
-  imports: [FormsModule, JsonPipe],
+  imports: [ReactiveFormsModule, JsonPipe],
   templateUrl: './inscription.html',
   styleUrl: './inscription.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Inscription {
   private readonly auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
 
-  // Emis quand l'utilisateur veut basculer vers l'ecran de connexion
   readonly basculerVersConnexion = output<void>();
 
-  protected user: User = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  };
+  // FormGroup nonNullable + validateurs par champ + validateur croise sur le groupe
+  readonly inscriptionForm = this.fb.nonNullable.group(
+    {
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmation: ['', Validators.required],
+    },
+    { validators: motsDePasseIdentiques },
+  );
 
-  protected confirmPassword = '';
+  get firstName() { return this.inscriptionForm.controls.firstName; }
+  get lastName() { return this.inscriptionForm.controls.lastName; }
+  get email() { return this.inscriptionForm.controls.email; }
+  get password() { return this.inscriptionForm.controls.password; }
+  get confirmation() { return this.inscriptionForm.controls.confirmation; }
 
-  // null = pas d'erreur, sinon message a afficher
   protected readonly erreur = signal<string | null>(null);
 
-  protected get motsDePassesCorrespondent(): boolean {
-    return this.user.password === this.confirmPassword;
-  }
-
-  protected get formulaireValide(): boolean {
-    return (
-      !!this.user.firstName?.trim() &&
-      !!this.user.lastName?.trim() &&
-      !!this.user.email.trim() &&
-      !!this.user.password &&
-      this.motsDePassesCorrespondent
-    );
-  }
-
   protected soumettre(): void {
-    if (!this.formulaireValide) {
+    if (this.inscriptionForm.invalid) {
       return;
     }
-    const resultat = this.auth.register(this.user);
+    const { firstName, lastName, email, password } = this.inscriptionForm.getRawValue();
+    const resultat = this.auth.register({ firstName, lastName, email, password });
     if (!resultat.ok) {
       this.erreur.set(
         resultat.reason === 'email-taken'
@@ -56,7 +51,7 @@ export class Inscription {
       );
       return;
     }
-    // Succès : AuthService a auto-connecté l'utilisateur → App bascule vers le site
+    this.erreur.set(null);
   }
 
   protected onBasculer(): void {

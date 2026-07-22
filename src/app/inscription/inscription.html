@@ -8,63 +8,100 @@
 
   <form
     class="form-container"
+    [formGroup]="inscriptionForm"
     (ngSubmit)="soumettre()"
     autocomplete="off"
     novalidate
   >
     <div class="form-line">
-      <input
-        type="text"
-        name="firstName"
-        class="input"
-        placeholder="Prénom"
-        required
-        [(ngModel)]="user.firstName"
-      />
-      <input
-        type="text"
-        name="lastName"
-        class="input"
-        placeholder="Nom"
-        required
-        [(ngModel)]="user.lastName"
-      />
+      <div class="form-field">
+        <input
+          type="text"
+          class="input"
+          placeholder="Prénom"
+          formControlName="firstName"
+        />
+        @if (firstName.touched && firstName.invalid) {
+          @if (firstName.hasError('required')) {
+            <small class="field-error">Le prénom est requis.</small>
+          } @else if (firstName.hasError('minlength')) {
+            <small class="field-error">2 caractères minimum.</small>
+          }
+        }
+      </div>
+
+      <div class="form-field">
+        <input
+          type="text"
+          class="input"
+          placeholder="Nom"
+          formControlName="lastName"
+        />
+        @if (lastName.touched && lastName.invalid) {
+          @if (lastName.hasError('required')) {
+            <small class="field-error">Le nom est requis.</small>
+          } @else if (lastName.hasError('minlength')) {
+            <small class="field-error">2 caractères minimum.</small>
+          }
+        }
+      </div>
     </div>
 
     <div class="form-line">
-      <input
-        type="email"
-        name="email"
-        class="input"
-        placeholder="Adresse email"
-        required
-        [(ngModel)]="user.email"
-      />
+      <div class="form-field">
+        <input
+          type="email"
+          class="input"
+          placeholder="Adresse email"
+          formControlName="email"
+        />
+        @if (email.touched && email.invalid) {
+          @if (email.hasError('required')) {
+            <small class="field-error">L'email est requis.</small>
+          } @else if (email.hasError('email')) {
+            <small class="field-error">Le format de l'email est invalide.</small>
+          }
+        }
+      </div>
     </div>
 
     <div class="form-line">
-      <input
-        type="password"
-        name="password"
-        class="input"
-        placeholder="Mot de passe"
-        required
-        [(ngModel)]="user.password"
-      />
+      <div class="form-field">
+        <input
+          type="password"
+          class="input"
+          placeholder="Mot de passe"
+          formControlName="password"
+        />
+        @if (password.touched && password.invalid) {
+          @if (password.hasError('required')) {
+            <small class="field-error">Le mot de passe est requis.</small>
+          } @else if (password.hasError('minlength')) {
+            <small class="field-error">6 caractères minimum.</small>
+          }
+        }
+      </div>
     </div>
 
     <div class="form-line">
-      <input
-        type="password"
-        name="confirmPassword"
-        class="input"
-        placeholder="Confirmer le mot de passe"
-        required
-        [(ngModel)]="confirmPassword"
-      />
+      <div class="form-field">
+        <input
+          type="password"
+          class="input"
+          placeholder="Confirmer le mot de passe"
+          formControlName="confirmation"
+        />
+        @if (confirmation.touched && confirmation.hasError('required')) {
+          <small class="field-error">La confirmation est requise.</small>
+        }
+      </div>
     </div>
 
-    @if (user.password && confirmPassword && !motsDePassesCorrespondent) {
+    @if (
+      inscriptionForm.hasError('motsDePasseDifferents')
+      && confirmation.touched
+      && !confirmation.hasError('required')
+    ) {
       <p class="form-error">Les mots de passe ne correspondent pas.</p>
     }
 
@@ -76,7 +113,7 @@
       <button
         type="submit"
         class="btn"
-        [disabled]="!formulaireValide"
+        [disabled]="inscriptionForm.invalid"
       >
         S'inscrire
       </button>
@@ -92,6 +129,6 @@
 
   <aside class="preview">
     <h3 class="preview-title">Aperçu en direct</h3>
-    <pre class="preview-json">{{ user | json }}</pre>
+    <pre class="preview-json">{{ inscriptionForm.value | json }}</pre>
   </aside>
 </section>
