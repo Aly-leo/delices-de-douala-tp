@@ -1,38 +1,40 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { User } from '../models/user';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-connexion',
-  imports: [FormsModule, JsonPipe],
+  imports: [ReactiveFormsModule, JsonPipe],
   templateUrl: './connexion.html',
   styleUrl: './connexion.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Connexion {
   private readonly auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
 
-  // Emis quand l'utilisateur veut basculer vers l'ecran d'inscription
   readonly basculerVersInscription = output<void>();
 
-  protected user: User = {
-    email: '',
-    password: '',
-  };
+  // Le formulaire est decrit en TypeScript avec FormBuilder + Validators
+  readonly connexionForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
+  // Acces pratique aux champs depuis le template
+  get email() { return this.connexionForm.controls.email; }
+  get password() { return this.connexionForm.controls.password; }
+
+  // Erreur applicative (retournee par AuthService)
   protected readonly erreur = signal<string | null>(null);
 
-  protected get formulaireValide(): boolean {
-    return !!this.user.email.trim() && !!this.user.password;
-  }
-
   protected soumettre(): void {
-    if (!this.formulaireValide) {
+    if (this.connexionForm.invalid) {
       return;
     }
-    const resultat = this.auth.login(this.user.email, this.user.password);
+    const { email, password } = this.connexionForm.getRawValue();
+    const resultat = this.auth.login(email, password);
     if (!resultat.ok) {
       this.erreur.set(
         resultat.reason === 'not-found'
@@ -42,7 +44,6 @@ export class Connexion {
       return;
     }
     this.erreur.set(null);
-    // Succès : AuthService a set currentUser → App bascule vers le site
   }
 
   protected onBasculer(): void {
