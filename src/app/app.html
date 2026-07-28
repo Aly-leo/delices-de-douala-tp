@@ -31,76 +31,35 @@
       />
 
       <nav class="tabs" aria-label="Navigation principale">
-        <button
-          type="button"
+        <a
           class="tab"
-          [class.active]="activeTab() === 'restaurants'"
-          [attr.aria-pressed]="activeTab() === 'restaurants'"
-          (click)="selectTab('restaurants')"
+          routerLink="/restaurants"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
         >
           Nos restaurants
-        </button>
-        <button
-          type="button"
+        </a>
+        <a
           class="tab"
-          [class.active]="activeTab() === 'carte'"
-          [attr.aria-pressed]="activeTab() === 'carte'"
-          (click)="selectTab('carte')"
+          routerLink="/carte"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
         >
           La Carte
-        </button>
-        <button
-          type="button"
+        </a>
+        <a
           class="tab tab-panier"
-          [class.active]="activeTab() === 'panier'"
-          [attr.aria-pressed]="activeTab() === 'panier'"
-          (click)="selectTab('panier')"
+          routerLink="/panier"
+          routerLinkActive="active"
         >
           Panier
           @if (nombreArticles() > 0) {
             <span class="tab-badge" aria-label="{{ nombreArticles() }} articles">{{ nombreArticles() }}</span>
           }
-        </button>
+        </a>
       </nav>
 
-      @if (activeTab() === 'restaurants') {
-        <section class="toolbar" aria-label="Affichage des restaurants">
-          <button
-            type="button"
-            class="toggle"
-            [class.active]="sortByRating()"
-            [attr.aria-pressed]="sortByRating()"
-            (click)="toggleSort()"
-          >
-            <span class="toggle-dot"></span>
-            Trier par note
-          </button>
-
-          <button
-            type="button"
-            class="toggle"
-            [class.active]="onlyTopRated()"
-            [attr.aria-pressed]="onlyTopRated()"
-            (click)="toggleFilter()"
-          >
-            <span class="toggle-dot"></span>
-            Top notés (≥ 4&nbsp;★)
-          </button>
-
-          @if (onlyTopRated() && visibleRestaurants().length === 0) {
-            <span class="toolbar-hint">Aucun restaurant n'atteint encore 4 étoiles.</span>
-          }
-        </section>
-
-        <app-restaurant-list
-          [restaurants]="visibleRestaurants()"
-          (restaurantRated)="onRestaurantRated($event)"
-        />
-      } @else if (activeTab() === 'carte') {
-        <app-carte />
-      } @else {
-        <app-commande (parcourirLaCarte)="selectTab('carte')" />
-      }
+      <router-outlet />
 
       <footer class="page-footer">
         <p>© 2026 — Délices de Douala • un guide culinaire camerounais</p>

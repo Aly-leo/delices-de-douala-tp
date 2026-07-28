@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { LigneCommande } from '../ligne-commande/ligne-commande';
 import { PanierService } from '../services/panier.service';
 
@@ -12,13 +13,12 @@ import { PanierService } from '../services/panier.service';
 })
 export class Commande {
   private readonly panier = inject(PanierService);
+  private readonly router = inject(Router);
 
   protected readonly lignes = this.panier.lignes;
   protected readonly total = this.panier.total;
   protected readonly nombreArticles = this.panier.nombreArticles;
   protected readonly estVide = this.panier.estVide;
-
-  readonly parcourirLaCarte = output<void>();
 
   protected onIncrementer(platId: string): void {
     this.panier.incrementer(platId);
@@ -37,6 +37,7 @@ export class Commande {
   }
 
   protected onParcourirLaCarte(): void {
-    this.parcourirLaCarte.emit();
+    // Navigation programmatique (chapitre 7 du cours)
+    this.router.navigate(['/carte']);
   }
 }
