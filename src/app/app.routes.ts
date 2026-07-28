@@ -7,7 +7,11 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'restaurants' },
   { path: 'restaurants', component: RestaurantsPage },
   { path: 'carte', component: Carte },
+  {
+    path: 'plats/:slug',
+    loadComponent: () =>
+      import('./pages/plat-detail/plat-detail').then((m) => m.PlatDetail),
+  },
   { path: 'panier', component: Commande },
-  // La route dynamique plats/:slug sera ajoutee avec le composant PlatDetail
   { path: '**', redirectTo: '' },
 ];

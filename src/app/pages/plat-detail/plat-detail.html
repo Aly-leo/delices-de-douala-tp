@@ -1,0 +1,63 @@
+<section class="plat-detail" aria-label="Détail du plat">
+  <a routerLink="/carte" class="back-link">
+    <span class="back-arrow" aria-hidden="true">&larr;</span>
+    Retour à la carte
+  </a>
+
+  @if (isLoading()) {
+    <div class="state state-loading" role="status" aria-live="polite">
+      <span class="loader" aria-hidden="true"></span>
+      Chargement du plat&hellip;
+    </div>
+  } @else if (error()) {
+    <div class="state state-error" role="alert">
+      <strong>Impossible de charger le menu.</strong>
+      <span>Vérifiez votre connexion et réessayez.</span>
+    </div>
+  } @else if (plat(); as p) {
+    <article class="detail-card" [class.epuise]="!p.disponible">
+      <div class="visuel">
+        @if (p.image) {
+          <img [src]="p.image" [alt]="p.nom" />
+        } @else {
+          <span class="visuel-emoji" aria-hidden="true">{{ icone(p.categorie) }}</span>
+        }
+        @if (!p.disponible) {
+          <span class="badge-epuise">Épuisé</span>
+        }
+      </div>
+
+      <div class="infos">
+        <span class="categorie">{{ p.categorie }}</span>
+        <h1 class="nom">{{ p.nom }}</h1>
+        <p class="description">{{ p.description }}</p>
+
+        <div class="footer">
+          <span class="prix">{{ p.prix | currency:'XAF':'symbol':'1.0-0' }}</span>
+
+          @if (p.disponible) {
+            <button
+              type="button"
+              class="btn-ajouter"
+              (click)="ajouterAuPanier(p)"
+            >
+              <span class="btn-icon" aria-hidden="true">+</span>
+              @if (quantiteDansPanier() > 0) {
+                Ajouter (×{{ quantiteDansPanier() }} dans le panier)
+              } @else {
+                Ajouter au panier
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </article>
+  } @else {
+    <div class="state state-empty">
+      <span class="empty-icon" aria-hidden="true">🔍</span>
+      <p class="empty-titre">Aucun plat trouvé</p>
+      <p class="empty-hint">Le plat «&nbsp;{{ slug() }}&nbsp;» n'existe pas dans la carte.</p>
+      <a routerLink="/carte" class="btn-retour">Voir toute la carte</a>
+    </div>
+  }
+</section>

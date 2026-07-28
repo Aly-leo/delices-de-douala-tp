@@ -21,10 +21,21 @@
     <span class="prix">{{ plat().prix | currency:'XAF':'symbol':'1.0-0' }}</span>
   </div>
 
-  @if (expanded() && plat().disponible) {
-    <button type="button" class="btn-ajouter" (click)="onAjouter($event)">
-      <span class="btn-icon" aria-hidden="true">+</span>
-      Ajouter au panier
-    </button>
-  }
+  <div class="plat-actions">
+    <a
+      class="btn-details"
+      [routerLink]="['/plats', plat().slug]"
+      (click)="onDetails($event)"
+    >
+      Détails
+      <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    @if (expanded() && plat().disponible) {
+      <button type="button" class="btn-ajouter" (click)="onAjouter($event)">
+        <span class="btn-icon" aria-hidden="true">+</span>
+        Ajouter au panier
+      </button>
+    }
+  </div>
 </article>
