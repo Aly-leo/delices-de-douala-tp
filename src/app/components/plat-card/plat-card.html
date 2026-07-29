@@ -5,6 +5,12 @@
   (click)="toggleExpanded()"
   [attr.aria-expanded]="expanded()"
 >
+  @if (plat().image) {
+    <div class="plat-thumb">
+      <img [src]="plat().image" [alt]="plat().nom" loading="lazy" />
+    </div>
+  }
+
   <div class="plat-head">
     <h3 class="plat-nom">{{ plat().nom }}</h3>
     @if (!plat().disponible) {
